@@ -4,11 +4,12 @@ using System.Linq;
 using System.Runtime.Caching;
 using System.Text;
 using System.Threading.Tasks;
+using MyShop.Core.Contracts;
 using MyShop.Core.Models;
 
 namespace MyShop.DataAccess.InMemory
 {
-    public class InMemoryRepository<T> where T : BaseEntity
+    public class InMemoryRepository<T> : IRepository<T> where T : BaseEntity
     {
         ObjectCache cache = MemoryCache.Default;
         List<T> items;
@@ -23,12 +24,12 @@ namespace MyShop.DataAccess.InMemory
             {
                 items = new List<T>();
             }
-            
+
         }
 
-        public void Commit() 
+        public void Commit()
         {
-            cache[className] = items;            
+            cache[className] = items;
         }
 
         public void Insert(T t)
@@ -49,7 +50,7 @@ namespace MyShop.DataAccess.InMemory
             }
         }
 
-        public T Find(string Id) 
+        public T Find(string Id)
         {
             T t = items.Find(n => n.Id == Id);
             if (t != null)
@@ -64,7 +65,7 @@ namespace MyShop.DataAccess.InMemory
 
         public IQueryable<T> Collection()
         {
-            return items.AsQueryable();       
+            return items.AsQueryable();
         }
 
         public void Delete(string Id)
