@@ -37,7 +37,7 @@
                 </div>
                 <div class="card-footer text-muted text-center">
                     <p>@Html.DisplayFor(modelItem => item.Price)</p>
-                    <div class="btn btn-sm btn-primary"> Add to Cart</div>
+                    <a class="btn btn-sm btn-primary" href="@Url.Action("AddToBasket", "Basket", new { Id = item.Id})">Add to Cart</a>                    
                 </div>
             </div>
         }
