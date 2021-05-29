@@ -1,4 +1,4 @@
-﻿@model IEnumerable<MyShop.Core.Models.Product>
+﻿@model MyShop.Core.ViewModels.ProductListViewModel
 @{
     ViewBag.Title = "Home Page";
 }
@@ -10,24 +10,39 @@
 </div>
 
 <div class="row container">
+
     <h4>Products</h4>
-
-    @foreach (var item in Model)
-    {
-        <div class="card col-md-3" style="padding:1rem; margin:1rem; border: 1px solid blue">
-            <img class="card-img-top img-responsive text-center img-rounded" src="~/Content/ProductImages/@item.Image" alt="@item.Name">
-
-            <div class="card-body text-center">
-                <h5 class="card-title">@Html.ActionLink(item.Name, "Details", new { id = item.Id })</h5>                
-                <h6>@Html.DisplayFor(modelItem => item.Category)</h6>
-                <p class="card-text">@Html.DisplayFor(modelItem => item.Description)</p>                
-            </div>
-            <div class="card-footer text-muted text-center">
-                <p>@Html.DisplayFor(modelItem => item.Price)</p>
-                <div class="btn btn-sm btn-primary"> Add to Cart</div>
-            </div>
+    <div class="col-md-2">
+        <h4>Filter By Category</h4>
+        <div class="list-group">
+            @Html.ActionLink("All", "Index", null, new { @class = Request["Category"] == null? "list-group-item active" : "list-group-item"})
+            @foreach (var category in Model.ProductCategories)
+            {
+                @Html.ActionLink(category.Category, "Index", new { Category = category.Category },
+                new { @class = Request["Category"] == category.Category ? "list-group-item active" : "list-group-item" })                
+            }
         </div>
-     } 
-    
-    <div class="col-md-12 clearfix"></div>
+
+    </div>
+    <div class="col-md-10">
+        @foreach (var item in Model.Products)
+        {
+            <div class="card col-md-3" style="padding:1rem; margin:1rem; border: 1px solid blue">
+                <img class="card-img-top img-responsive text-center img-rounded" src="~/Content/ProductImages/@item.Image" alt="@item.Name">
+
+                <div class="card-body text-center">
+                    <h5 class="card-title">@Html.ActionLink(item.Name, "Details", new { id = item.Id })</h5>
+                    <h6>@Html.DisplayFor(modelItem => item.Category)</h6>
+                    <p class="card-text">@Html.DisplayFor(modelItem => item.Description)</p>
+                </div>
+                <div class="card-footer text-muted text-center">
+                    <p>@Html.DisplayFor(modelItem => item.Price)</p>
+                    <div class="btn btn-sm btn-primary"> Add to Cart</div>
+                </div>
+            </div>
+        }
+
+        <div class="col-md-12 clearfix"></div>
+    </div>
+   
 </div>
