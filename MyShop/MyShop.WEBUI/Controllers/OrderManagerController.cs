@@ -19,11 +19,17 @@ namespace MyShop.WEBUI.Controllers
         public ActionResult Index()
         {
             List<Order> orders = OrderService.GetOrders();
-            return View();
+            return View(orders);
         }
 
         public ActionResult UpdateOrder(string Id) {
-
+            ViewBag.StatusList = new List<string>()
+            {
+                "New Order",
+                "Payment Processed",
+                "Order Shipped",
+                "Order Complete"
+            };
             Order order = OrderService.GetOrder(Id);
             
                 return View(order);            
