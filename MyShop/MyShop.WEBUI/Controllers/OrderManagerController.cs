@@ -8,6 +8,7 @@ using System.Web.Mvc;
 
 namespace MyShop.WEBUI.Controllers
 {
+    [Authorize(Roles = "Admin")]
     public class OrderManagerController : Controller
     {
         IOrderService OrderService;
