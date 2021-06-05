@@ -12,10 +12,12 @@ namespace MyShop.WEBUI.Controllers
     {
         IBasketService basketService;
         IOrderService orderService;
+        IRepository<Customer> customers;
 
-        public BasketController(IBasketService BasketService, IOrderService OrderService) {
+        public BasketController(IBasketService BasketService, IOrderService OrderService, IRepository<Customer> Customer) {
             this.basketService = BasketService;
-            this.orderService = OrderService;   
+            this.orderService = OrderService;
+            this.customers = Customer;
         }
         // GET: Basket
         public ActionResult Index()
@@ -39,17 +41,39 @@ namespace MyShop.WEBUI.Controllers
         public PartialViewResult BasketSummery() {
             var basketSummery =  basketService.GetBasketSummary(this.HttpContext);
             return PartialView(basketSummery);
-        }
+        }  
 
+        [Authorize]
         public ActionResult Checkout() {
-            return View();
+            Customer customer = customers.Collection().FirstOrDefault(c => c.Email == User.Identity.Name);
+
+            if (customer != null) {
+                Order order = new Order()
+                {
+                    FirstName = customer.FirstName,
+                    SurName = customer.LastName,
+                    Email = customer.Email,
+                    Street = customer.Street,
+                    City = customer.City,
+                    State = customer.State,
+                    Zip = customer.ZipCode
+                };
+                return View(order);
+            }
+            else
+            {
+                return RedirectToAction("Error");
+            }
+            
         }
 
         [HttpPost]
+        [Authorize]
         public ActionResult Checkout(Order order)
         {
             var basketItems = basketService.GetBasketItems(this.HttpContext);
             order.OrderStatus = "New Order";
+            order.Email = User.Identity.Name;
 
             //Payment Process code
 
